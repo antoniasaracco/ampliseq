@@ -1,34 +1,16 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Ampliseq - Single Schema Supporting Both Formats",
-    "description": "Schema supporting both legacy and standardized formats",
+    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_input.json",
+    "title": "nf-core/ampliseq pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Legacy sample ID cannot contain spaces"
-            },
-            "fastq_1": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "Legacy FastQ file for reads 1 must have extension '.fq.gz' or '.fastq.gz'"
-            },
-            "fastq_2": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "Legacy FastQ file for reads 2 must have extension '.fq.gz' or '.fastq.gz'"
-            },
             "sampleID": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "errorMessage": "Standardized sample ID must start with a letter and contain only letters, numbers, or underscores",
+                "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
                 "meta": [
                     "sample"
                 ]
@@ -38,14 +20,36 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "Standardized forward reads must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
             "reverseReads": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "Standardized reverse reads must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "sample": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
+                "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
+                "meta": [
+                    "sample"
+                ]
+            },
+            "fastq_1": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "fastq_2": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
             "run": {
                 "type": [
@@ -84,55 +88,17 @@
         },
         "anyOf": [
             {
-                "comment": "Legacy format: must have sample and fastq_1",
-                "required": [
-                    "sample",
-                    "fastq_1"
-                ],
-                "not": {
-                    "anyOf": [
-                        {
-                            "required": [
-                                "sampleID"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "forwardReads"
-                            ]
-                        }
-                    ]
-                }
-            },
-            {
-                "comment": "Standardized format: must have sampleID and forwardReads",
                 "required": [
                     "sampleID",
                     "forwardReads"
-                ],
-                "not": {
-                    "anyOf": [
-                        {
-                            "required": [
-                                "sample"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "fastq_1"
-                            ]
-                        }
-                    ]
-                }
+                ]
+            },
+            {
+                "required": [
+                    "sample",
+                    "fastq_1"
+                ]
             }
-        ],
-        "dependentRequired": {
-            "fastq_2": [
-                "fastq_1"
-            ],
-            "reverseReads": [
-                "forwardReads"
-            ]
-        }
+        ]
     }
 }
